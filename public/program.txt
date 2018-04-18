@@ -1,9 +1,10 @@
-#Start: START
+﻿#Start: START
 #Bilde: bakgrunTemplate.png
-#Handling: Gå til NesteSide, knapp.png, bakgrunn=bakgrun2.png, 200,200
+#Handling: Gå til NesteSide, knapp.png, bakgrunn=bakgrun2.png, lyd.wav, 200,200
 //#Lagre: bakgrunn=bakgrun2.png
 #Slutt
 
 #Start: NesteSide 
 #Bilde: [bakgrunn]
+#Lyd: lyd.wav, knapp.png
 #Slutt

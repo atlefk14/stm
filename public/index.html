@@ -135,6 +135,11 @@
         reg: /\#\s*Bevegelse\s*:\s*(.*)/,
         atomic: true
       },
+	  {
+        key: "VelgEn",
+        reg: /\#\s*VelgEn\s*:\s*(.*)/,
+        atomic: true
+      },
       {
         key: "Terning",
         reg: /\#\s*Terning\s*:\s*(.*)/,
@@ -234,7 +239,6 @@
         sceen.forEach((item) => {
 
           let cmdKey = extractCommand(item);
-		  console.log("cmdKey: "+cmdKey)
           let cmd = getCommandSemantics(cmdKey)
 
           if (cmd == null) {
@@ -402,15 +406,20 @@
 
     function renderProgramSection(program) {
 
+	  if(program.VelgEn)
+	  {
+		createStates(program)
+	  }
       program = applyState(program);
-      //Linje 400, stopper lydene som kommer fra handlingknappene, som også har 'Gå til' funksjonalitet. 
+
+	  //Linje 400, stopper lydene som kommer fra handlingknappene, som også har 'Gå til' funksjonalitet. 
 	  stopSound();
       currentCount = 0;
       ansList = [];
       let element = getTemplate("oppgave");
       let container = document.getElementById("container");
       clear(container);
-
+	  
       let handlinger = "";
       if (program.Handling) {
         if (Array.isArray(program.Handling)) {
@@ -429,6 +438,7 @@
           handlinger += t;
         }
       }
+
       element = applyModelToTemplate(program, element);
       element = applyConditionalsToTemplate(program, element);
       element = element.replace("[Handlinger/]", handlinger);
@@ -436,6 +446,7 @@
       element = createDragAndDrop(program, element);
       element = createDice(program, element);
       element = createTargets(program, element);
+	  //element = createStates(program, element);
       element = createBevegelser(program, element);
 	  element = createElement(element);
       container.appendChild(element);
@@ -455,6 +466,33 @@
       }
 
     }
+	// State information
+	function createStates(program)
+	{
+	console.log("Create states");
+	  if (Array.isArray(program.VelgEn)) {
+        program.VelgEn.forEach(raw => {
+          createState(raw);
+        });
+
+      } else if (program.VelgEn) {
+        createState(program.VelgEn);
+      }
+      //element = element.replace("[Bevegelse/]", output)
+      //return element;
+	}
+	function createState(raw)
+	{
+		  console.log("Create state");
+		  console.log(raw);
+     	  let variables = raw.split("=");
+		  let values = variables[1].split(",");
+		  var value = values[Math.floor(Math.random()*values.length)].trim();
+          let key = variables[0].trim();
+          state[key] = value;
+          console.log("State " + key + " set to " + value);
+	}
+	
 	
 	// Bevegelse
 	function createBevegelser(program, element)
